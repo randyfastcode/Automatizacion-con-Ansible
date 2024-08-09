@@ -1,0 +1,51 @@
+- name: Configurar servidores  # Descriptive task name
+  hosts: servers                 # Target server(s)
+  become: yes                   # Enable privilege escalation
+  tasks:
+    - name: Update apt cache      # Clear comment for readability
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2       # More specific name
+      apt:
+        name: apache2
+        state: present
+
+    - name: Install cowsay        # Clear comment
+      apt:
+        name: cowsay
+        state: present
+
+    - name: Create text file      # Clear comment
+      file:
+        path: /tmp/mi_archivo.txt
+        state: touch
+
+    - name: Copy file (fix path)   # Informative name and error handling
+      copy:
+        src: Practica8/archivo_origen.txt  # Assuming source is in Practica8
+        dest: /tmp/archivo_copiado.txt
+      register: copy_result
+      failed_when: copy_result.rc != 0  # Check for copy errors
+
+    - name: Create directory      # Clear comment
+      file:
+        path: /tmp/mi_carpeta
+        state: directory
+
+    - name: Start Apache2         # Clear comment
+      service:
+        name: apache2
+        state: started
+
+    - name: Add user (fix path)   # Informative name and error handling
+      user:
+        name: mi_usuario
+        state: present
+      register: user_result
+      failed_when: user_result.rc != 0  # Check for user creation errors
+
+    - name: Execute script (fix path) # Informative name and error handling
+      script: Practica8/mi_script.sh  # Assuming script is in Practica8
+      register: script_result
+      failed_when: script_result.rc != 0  # Check for script execution errors
